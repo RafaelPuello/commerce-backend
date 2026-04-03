@@ -1,0 +1,5 @@
+services:
+  db:
+    env_file:
+      - db.env
+    environment: []
