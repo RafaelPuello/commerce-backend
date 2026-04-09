@@ -3,3 +3,17 @@ services:
     env_file:
       - db.env
     environment: []
+  api:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.saleor-api.rule=Host(`api.localhost`)"
+      - "traefik.http.routers.saleor-api.entrypoints=web"
+      - "traefik.http.routers.saleor-api.priority=100"
+      - "traefik.http.services.saleor-api.loadbalancer.server.port=8000"
+  dashboard:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.saleor-dashboard.rule=Host(`admin.localhost`)"
+      - "traefik.http.routers.saleor-dashboard.entrypoints=web"
+      - "traefik.http.routers.saleor-dashboard.priority=100"
+      - "traefik.http.services.saleor-dashboard.loadbalancer.server.port=80"

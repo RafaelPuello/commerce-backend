@@ -6,6 +6,7 @@ services:
     restart: unless-stopped
     networks:
       - saleor-backend-tier
+      - digidex-net
     stdin_open: true
     tty: true
     depends_on:
@@ -20,13 +21,29 @@ services:
       - backend.env
     environment:
       - DASHBOARD_URL=http://10.0.0.218:9000/
-      - ALLOWED_HOSTS=localhost,127.0.0.1,api,10.0.0.218
+      - ALLOWED_HOSTS=localhost,127.0.0.1,api,10.0.0.218,api.localhost,api.digidex.bio
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.saleor-api.rule=Host(`api.digidex.bio`)"
+      - "traefik.http.routers.saleor-api.entrypoints=websecure"
+      - "traefik.http.routers.saleor-api.tls=true"
+      - "traefik.http.routers.saleor-api.tls.certresolver=le"
+      - "traefik.http.services.saleor-api.loadbalancer.server.port=8000"
 
   dashboard:
     image: ghcr.io/saleor/saleor-dashboard:latest
     ports:
       - 10.0.0.218:9000:80
     restart: unless-stopped
+    networks:
+      - digidex-net
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.saleor-dashboard.rule=Host(`admin.digidex.bio`)"
+      - "traefik.http.routers.saleor-dashboard.entrypoints=websecure"
+      - "traefik.http.routers.saleor-dashboard.tls=true"
+      - "traefik.http.routers.saleor-dashboard.tls.certresolver=le"
+      - "traefik.http.services.saleor-dashboard.loadbalancer.server.port=80"
 
   db:
     image: library/postgres:15-alpine
@@ -100,3 +117,5 @@ volumes:
 networks:
   saleor-backend-tier:
     driver: bridge
+  digidex-net:
+    external: true
