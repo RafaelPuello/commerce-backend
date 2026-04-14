@@ -4,6 +4,8 @@ services:
       - db.env
     environment: []
   api:
+    environment:
+      - ALLOWED_HOSTS=localhost,127.0.0.1,api,10.0.0.218,api.localhost,api.digidex.bio,digidex.lan,api.digidex.lan,admin.digidex.lan
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.saleor-api.rule=Host(`api.digidex.lan`)"
