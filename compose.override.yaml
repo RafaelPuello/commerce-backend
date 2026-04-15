@@ -5,21 +5,15 @@ services:
     environment: []
   api:
     environment:
-      - ALLOWED_HOSTS=localhost,127.0.0.1,api,10.0.0.218,api.localhost,api.digidex.bio,digidex.lan,api.digidex.lan,admin.digidex.lan
+      - ALLOWED_HOSTS=localhost,127.0.0.1,api,10.0.0.218,api.localhost,api.digidex.bio
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.saleor-api.rule=Host(`api.digidex.lan`)"
+      - "traefik.http.routers.saleor-api.rule=Host(`10.0.0.218`) && PathPrefix(`/graphql/`)"
       - "traefik.http.routers.saleor-api.entrypoints=web"
       - "traefik.http.routers.saleor-api.priority=100"
       - "traefik.http.routers.saleor-api.tls=false"
       - "traefik.http.routers.saleor-api.tls.certresolver="
       - "traefik.http.services.saleor-api.loadbalancer.server.port=8000"
   dashboard:
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.saleor-dashboard.rule=Host(`admin.digidex.lan`)"
-      - "traefik.http.routers.saleor-dashboard.entrypoints=web"
-      - "traefik.http.routers.saleor-dashboard.priority=100"
-      - "traefik.http.routers.saleor-dashboard.tls=false"
-      - "traefik.http.routers.saleor-dashboard.tls.certresolver="
-      - "traefik.http.services.saleor-dashboard.loadbalancer.server.port=80"
+    ports:
+      - "9000:80"
